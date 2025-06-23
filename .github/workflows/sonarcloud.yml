@@ -1,35 +1,30 @@
-name: SonarCloud
+name: SonarQube Analysis
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    types: [opened, synchronize, reopened]
+    branches: [ main ]
 
 jobs:
-  build:
-    name: SonarCloud Scan
+  sonarqube:
+    name: Analyze with SonarQube
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: 18
 
       - name: Install dependencies
         run: npm install
 
-      - name: Run SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
-        with:
-          args: >
-            -Dsonar.projectKey=ZiHenggg_SSD-Lab-9
-            -Dsonar.organization=zihenggg
-            -Dsonar.javascript.lcov.reportPaths=coverage/lcov.info
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
